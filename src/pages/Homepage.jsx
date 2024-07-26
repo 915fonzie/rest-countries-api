@@ -1,54 +1,175 @@
-import { useQuery } from "@tanstack/react-query"
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { Link, useLoaderData } from "react-router-dom"
+import { motion } from "framer-motion";
+import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import CountryCard from "../components/CountryCard";
+import { useQueries } from "@tanstack/react-query";
+import getCountries from "../api/getCountries";
+import getRegion from "../api/getRegion"
+import { ThemeContext } from "../components/Layout";
 
+const countryQuery = () => ({
+  queryKey: ["countries"],
+  queryFn: async () => getCountries(),
+});
+const regionQuery = (region) => ({
+  queryKey: ["region", region],
+  queryFn: async () => getRegion(region),
+});
 
-export async function loader(queryClient) {
-    const query = await queryClient.fetchQuery({
-        queryKey: ['countries'],
-        queryFn: async () => {
-            const response = await fetch("https://restcountries.com/v3.1/all")
-            return await response.json()
-        }
-    })
-    return query
-}
+export const loader = (queryClient) => async () => {
+  const query = countryQuery();
+  return queryClient.ensureQueryData({
+    queryKey: query.queryKey,
+    queryFn: async () => getCountries(),
+  });
+};
 
 export default function Homepage() {
+  const { theme } = useContext(ThemeContext);
+  const queries = useQueries({
+    queries:
+    [
+      countryQuery(),
+      regionQuery('africa'),
+      regionQuery('america'),
+      regionQuery('asia'),
+      regionQuery('europe'),
+      regionQuery('oceania'),
+    ]
+  });
+  
 
-    const [data] = useState(useLoaderData())
-    const [selectedCountries, setSelectedCountries] = useState([])
+  const [selectedCountries, setSelectedCountries] = useState(queries[0].data);
+  const [selectedRegion, setSelectedRegion] = useState("Filter by Region");
+  const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
+  const list = {
+    open: {
+      clipPath: "inset(0% 0% 0% 0% round 5px)",
+      transition: {
+        type: "spring",
+        bounce: 0,
+        duration: 0.7,
+        delayChildren: 0.3,
+        staggerChildren: 0.05,
+      },
+    },
+    closed: {
+      clipPath: "inset(10% 50% 90% 50% round 5px)",
+      transition: {
+        type: "spring",
+        bounce: 0,
+        duration: 0.3,
+      },
+    },
+  };
 
-        const randomizedCountries = data.map(country => {
-            return { country, r: Math.random() }
-        }).sort((a, b) => a.r - b.r).map(a => a.country).slice(0, 10)
+  const item = {
+    open: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+    closed: {
+      opacity: 0,
+      y: 20,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
 
-        setSelectedCountries(randomizedCountries)
-
-    },[])
-
-
-
-    console.log(selectedCountries)
-
-    // const randomizedData = data.sort(() => 0.5 - Math.random())
-    // const selectedCountries = randomizedData.slice(0, 10)
-
-    // console.log(data)
-    // console.log(selectedCountries)
-
+  const CountryCardElements = selectedCountries.map((country) => {
+    const { name, flags, population, region, capital } = country;
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{duration: 1}}
-            exit={{x: -300, opacity: 0}}
+      <CountryCard
+        key={name.official}
+        name={name.common}
+        flag={flags.svg}
+        population={population}
+        region={region}
+        capital={capital}
+      />
+    );
+  });
+
+  function handleSelect(event) {
+    if (event.target.matches("li")) {
+      setSelectedRegion(event.target.innerText);
+      setIsOpen(false);
+      if (event.target.innerText === "Africa") {
+        setSelectedCountries(queries[1].data)
+      }
+      if (event.target.innerText === "America") {
+        setSelectedCountries(queries[2].data)
+      }
+      if (event.target.innerText === "Asia") {
+        setSelectedCountries(queries[3].data)
+      }
+      if (event.target.innerText === "Europe") {
+        setSelectedCountries(queries[4].data)
+      }
+      if (event.target.innerText === "Oceania") {
+        setSelectedCountries(queries[5].data)
+      }
+    }
+  }
+
+
+
+  return (
+    <motion.div
+      className={`home-container ${theme}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      exit={{ opacity: 0 }}
+      style={{ willChange: "auto" }}
+    >
+      <div className={`inputs ${theme}`}>
+        <input placeholder="Search for a country..." />
+        <motion.nav
+          initial={false}
+          animate={isOpen ? "open" : "closed"}
+          className={`menu ${theme}`}
         >
-            This is homepage
-            <Link to="./1">country</Link>
-        </motion.div>
-    )
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {selectedRegion}
+            <motion.div
+              variants={{
+                open: { rotate: 180 },
+                closed: { rotate: 0 },
+              }}
+              transition={{ duration: 0.2 }}
+              style={{ originY: 0.55 }}
+            >
+              <svg width="15" height="15" viewBox="0 0 20 20">
+                <path d="M0 7 L 20 7 L 10 16" />
+              </svg>
+            </motion.div>
+          </motion.button>
+          <motion.ul
+            variants={list}
+            style={{ pointerEvents: isOpen ? "auto" : "none" }}
+            onClick={(e) => handleSelect(e)}
+          >
+            <motion.li variants={item}>Africa</motion.li>
+            <motion.li variants={item}>America</motion.li>
+            <motion.li variants={item}>Asia</motion.li>
+            <motion.li variants={item}>Europe</motion.li>
+            <motion.li variants={item}>Oceania</motion.li>
+          </motion.ul>
+        </motion.nav>
+      </div>
+      <div className="cards-container">{CountryCardElements}</div>
+      <Link to="./1">country</Link>
+    </motion.div>
+  );
 }

@@ -1,3 +1,223 @@
+$white: #ffffff;
+$light-gray: #fafafa;
+$dark-gray: #858585;
+$dark-blue: #2b3945;
+$very-dark-blue: #202c37;
+$very-dark-blue-text: #111517;
 
+// - Dark Blue (Dark Mode Elements): hsl(209, 23%, 22%)
+// - Very Dark Blue (Dark Mode Background): hsl(207, 26%, 17%)
+// - Very Dark Blue (Light Mode Text): hsl(200, 15%, 8%)
+// - Dark Gray (Light Mode Input): hsl(0, 0%, 52%)
+// - Very Light Gray (Light Mode Background): hsl(0, 0%, 98%)
+// - White (Dark Mode Text & Light Mode Elements): hsl(0, 0%, 100%)
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200..800&display=swap');
+
+@mixin flex($justify, $align, $direction) {
+    display: flex;
+    justify-content: $justify;
+    align-items: $align;
+    flex-direction: $direction;
+}
 
 @import "./global";
+
+.site-wrapper.light-theme {
+    background-color: $light-gray;
+    color: $very-dark-blue-text;
+}
+
+.site-wrapper.dark-theme {
+    background-color: $very-dark-blue;
+    color: $white;
+}
+
+header {
+    @include flex(center, center, row);
+    padding: 0 1em;
+    width: 100%;
+    height: 80px;
+    nav {
+        @include flex(space-between, center, row);
+        width: 100%;
+        a {
+            text-decoration: none;
+            font-weight: 800;
+        }
+        button {
+            background: none;
+            border: none;
+            font-weight: 600;
+        }
+        a,
+        button {
+            cursor: pointer;
+            transition: transform 0.2s;
+            &:hover,
+            &:focus-visible {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+header.light-theme {
+    background-color: $white;
+    box-shadow: 0 1px 4px rgb(182, 182, 182);
+    nav {
+        a,
+        button {
+            color: $very-dark-blue-text;
+        }
+    }
+}
+
+header.dark-theme {
+    background-color: $dark-blue;
+    nav {
+        a,
+        button {
+            color: $white;
+        }
+    }
+
+}
+
+.home-container {
+    @include flex(center, center, column);
+    gap: 2em;
+}
+
+.inputs {
+    width: 100%;
+    padding: 1em;
+    @include flex(center, flex-start, column);
+    gap: 1em;
+    select {
+        padding-left: 2em;
+        width: 200px;
+        height: 48px;
+        border: none;
+        border-radius: 5px;
+    }
+}
+
+.menu {
+    width: 200px;
+    height: 56px;
+    button {
+        @include flex(space-between, center, row);
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        padding: 1em;
+        font-weight: 300;
+        cursor: pointer;
+    }
+
+    ul {
+        @include flex(center, flex-start, column);
+        padding: 1em;
+    }
+
+    li {
+        display: block;
+        width: 100%;
+        padding: 0.1em;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    ul,
+    li {
+        list-style: none;
+        margin: 0;
+        margin-top: 0.25em;
+        padding-left: 0.5em;
+        font-weight: 300;
+    }
+}
+
+.menu.light-theme {
+    ul {
+        background-color: $white;
+    }
+    li {
+        color: $very-dark-blue-text;
+        &:hover,
+        &:focus-visible {
+            background-color: #f4f3f3;
+        }
+    }
+    button {
+        background-color: $white;
+        color: $very-dark-blue-text;
+        box-shadow: 0 0px 4px rgb(232, 232, 232);
+        path {
+            fill: $very-dark-blue-text;
+        }
+    }
+}
+
+.menu.dark-theme {
+    ul {
+        background-color: $dark-blue;
+    }
+    li {
+        color: $white;
+    }
+    button {
+        background-color: $dark-blue;
+        color: $white;
+        path {
+            fill: $white;
+        }
+    }
+}
+
+.cards-container {
+    @include flex(center, center, row);
+    flex-wrap: wrap;
+    gap: 2em;
+}
+
+
+.country-card {
+    width: 264px;
+    height: 336px;
+    border-radius: 5px;
+    img {
+        width: 264px;
+        height: 160px;
+        object-fit: cover;
+        object-position: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    h1 {
+        margin-top: 0em;
+        font-size: 18px;
+    }
+
+    P {
+        margin: 0.5em 0;
+        font-size: 14px;
+        font-weight: 300;
+        span {
+            font-weight: 600;
+        }
+    }
+}
+
+.country-card.light-theme {
+    box-shadow: 0 1px 4px rgb(182, 182, 182);
+}
+.country-card.dark-theme {
+    background-color: $dark-blue;
+}
+
+.country-card-text {
+    padding: 1em 1.5em;
+}

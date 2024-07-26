@@ -27,7 +27,7 @@ const router = createBrowserRouter([
         index: true,
         name: "HOME",
         element: <Homepage />,
-        loader: () => homeLoader(queryClient),
+        loader: homeLoader(queryClient),
       },
       {
         path: ":country",
