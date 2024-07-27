@@ -6,6 +6,7 @@ import { useQueries } from "@tanstack/react-query";
 import getCountries from "../api/getCountries";
 import getRegion from "../api/getRegion"
 import { ThemeContext } from "../components/Layout";
+import { useDebounce } from "rooks";
 
 const countryQuery = () => ({
   queryKey: ["countries"],
@@ -25,7 +26,10 @@ export const loader = (queryClient) => async () => {
 };
 
 export default function Homepage() {
+
   const { theme } = useContext(ThemeContext);
+  const debouncedSubmit = useDebounce((e) => handleSearch(e), 500);
+
   const queries = useQueries({
     queries:
     [
@@ -38,7 +42,6 @@ export default function Homepage() {
     ]
   });
   
-
   const [selectedCountries, setSelectedCountries] = useState(queries[0].data);
   const [selectedRegion, setSelectedRegion] = useState("Filter by Region");
   const [isOpen, setIsOpen] = useState(false);
@@ -86,14 +89,18 @@ export default function Homepage() {
   const CountryCardElements = selectedCountries.map((country) => {
     const { name, flags, population, region, capital } = country;
     return (
-      <CountryCard
+      <Link
+        to={name.official.split(' ').join('-')}
         key={name.official}
-        name={name.common}
-        flag={flags.svg}
-        population={population}
-        region={region}
-        capital={capital}
-      />
+      >
+        <CountryCard
+          name={name.common}
+          flag={flags.svg}
+          population={population}
+          region={region}
+          capital={capital}
+          />
+        </Link>
     );
   });
 
@@ -101,6 +108,9 @@ export default function Homepage() {
     if (event.target.matches("li")) {
       setSelectedRegion(event.target.innerText);
       setIsOpen(false);
+      if (event.target.innerText === "All") {
+        setSelectedCountries(queries[0].data)
+      }
       if (event.target.innerText === "Africa") {
         setSelectedCountries(queries[1].data)
       }
@@ -119,7 +129,19 @@ export default function Homepage() {
     }
   }
 
-
+  function handleSearch(search) {
+    if (search === "") {
+      setSelectedCountries(queries[0].data)
+    }
+    else {
+      setSelectedCountries(queries[0].data.filter(country => {
+        return(
+          country.name.official.toLowerCase().includes(search.toLowerCase()) ||
+          country.name.common.toLowerCase().includes(search.toLowerCase())
+        )
+      }))
+    }
+  }
 
   return (
     <motion.div
@@ -131,7 +153,17 @@ export default function Homepage() {
       style={{ willChange: "auto" }}
     >
       <div className={`inputs ${theme}`}>
-        <input placeholder="Search for a country..." />
+        <form id="search-form" role="search" onSubmit={(e) => e.preventDefault()}>
+          <input
+            id="querySearch"
+            className={`${theme}`}
+            name="querySearch"
+            type="search"
+          placeholder="Search for a country..."
+            onChange={(e) => debouncedSubmit(e.target.value)}
+            onSubmit={(e) => handleSearch(e.target.value, e.currentTarget.form)}
+          />
+          </form>
         <motion.nav
           initial={false}
           animate={isOpen ? "open" : "closed"}
@@ -160,6 +192,7 @@ export default function Homepage() {
             style={{ pointerEvents: isOpen ? "auto" : "none" }}
             onClick={(e) => handleSelect(e)}
           >
+            <motion.li variants={item}>All</motion.li>
             <motion.li variants={item}>Africa</motion.li>
             <motion.li variants={item}>America</motion.li>
             <motion.li variants={item}>Asia</motion.li>
@@ -168,8 +201,9 @@ export default function Homepage() {
           </motion.ul>
         </motion.nav>
       </div>
-      <div className="cards-container">{CountryCardElements}</div>
-      <Link to="./1">country</Link>
+      <div className="cards-container">
+        {CountryCardElements.length > 0 ? CountryCardElements : <h1>No Results Found</h1>}
+      </div>
     </motion.div>
   );
 }
