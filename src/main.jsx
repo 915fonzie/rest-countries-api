@@ -2,11 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import './css/index.css'
 import Layout from './components/Layout.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import Homepage, { loader as homeLoader } from './pages/Homepage.jsx'
 import CountryDetails, {loader as detailsLoader} from './pages/CountryDetails.jsx'
+import './css/index.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -394,6 +394,9 @@ form input.dark-theme {
 @media screen and (min-width: 1000px) {
     header {
         padding: 0 4em;
+        a {
+            font-size: 1.75rem;
+        }
     }
     .inputs {
         padding: 3em 4em 0;

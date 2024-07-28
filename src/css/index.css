@@ -406,6 +406,9 @@ form input.dark-theme::placeholder {
   header {
     padding: 0 4em;
   }
+  header a {
+    font-size: 1.75rem;
+  }
   .inputs {
     padding: 3em 4em 0;
   }
