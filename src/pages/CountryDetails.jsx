@@ -48,7 +48,7 @@ export default function CountryDetails() {
             </Link>
             <div className="country">
                 <div className="country-img-wrapper">
-                    <img src={data[0].flags.svg} />
+                    <img src={data[0].flags.svg} alt={`flag of ${data[0].name.common}`} />
                 </div>
                 <div className="country-text">
                     <h1>{data[0].name.common}</h1>

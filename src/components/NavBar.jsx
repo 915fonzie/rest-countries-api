@@ -12,7 +12,7 @@ export default function NavBar() {
             <nav>
                 <Link to="/">Where in the world?</Link>
                 <button onClick={toggleTheme}>
-                    {theme === "light-theme" ? <img src={moon} style={{width: "20px"}}/> : <img src={sun} style={{width: "20px"}}/>}
+                    {theme === "light-theme" ? <img src={moon} style={{width: "20px"}} alt="moon icon"/> : <img src={sun} style={{width: "20px"}} alt="sun icon"/>}
                     Dark Mode
                 </button>
             </nav>

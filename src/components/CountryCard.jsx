@@ -29,7 +29,7 @@ export default function CountryCard({ flag, name, population, region, capital })
             whileTap={{ scale: 0.9 }}
             variants={itemVariants}
         >
-            <img src={flag} />
+            <img src={flag} alt={`flag of ${name}`} />
             <div className="country-card-text">
                 <h1>{name}</h1>
                 <p><span>Population: </span>{population}</p>
