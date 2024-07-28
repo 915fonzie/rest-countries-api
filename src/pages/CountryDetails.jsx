@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { ThemeContext } from "../components/Layout"
 import { useContext } from "react"
-import backArrow from '../assets/backarrow.svg'
 
 const countryDetailQuery = (name) => ({
     queryKey: ['country', name],
@@ -26,6 +25,7 @@ export default function CountryDetails() {
     const params = useParams()
     const {theme} = useContext(ThemeContext)
     const { data, isPending } = useQuery(countryDetailQuery(params.country.split('-').join(" ")))
+
     if (isPending) {
         return <h1>Loading...</h1>
     }
@@ -54,16 +54,16 @@ export default function CountryDetails() {
                     <h1>{data[0].name.common}</h1>
                     <div className="details">
                         <div>
-                            <p><span>Native Name: </span>{Object.values(data[0].name.nativeName)[0].common}</p>
-                            <p><span>Population: </span>{data[0].population}</p>
-                            <p><span>Region: </span>{data[0].region}</p>
-                            <p><span>Sub Region: </span>{data[0].subregion}</p>
-                            <p><span>Capital: </span>{data[0].capital[0]}</p>
+                            <p><span>Native Name: </span>{data[0].name?.nativeName ? Object.values(data[0].name.nativeName)[0].common : "no data"}</p>
+                            <p><span>Population: </span>{data[0].population ? data[0].population : "no-data"}</p>
+                            <p><span>Region: </span>{data[0].region ? data[0].region : "no data"}</p>
+                            <p><span>Sub Region: </span>{data[0].subregion ? data[0].subregion : "no data"}</p>
+                            <p><span>Capital: </span>{data[0].capital ? data[0].capital[0] : "no data"}</p>
                         </div>
                         <div>
-                            <p><span>Top Level Domain: </span>{data[0].tld[0]}</p>
-                            <p><span>Currencies: </span>{Object.values(data[0].currencies)[0].name}</p>
-                            <p><span>Languages: </span>{Object.values(data[0].languages).join(", ")}</p>
+                            <p><span>Top Level Domain: </span>{data[0].tld ? data[0].tld[0] : "no data"}</p>
+                            <p><span>Currencies: </span>{data[0].currencies ? Object.values(data[0].currencies)[0].name : "no data"}</p>
+                            <p><span>Languages: </span>{data[0].languages ? Object.values(data[0].languages).join(", ") : "no data"}</p>
                         </div>
                     </div>
                     <div className="border-wrapper">
