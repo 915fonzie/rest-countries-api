@@ -1,6 +1,7 @@
 import NavBar from "./NavBar";
 import AnimatedOutlet from "./AnimatedOutlet";
 import { createContext, useState } from "react";
+import { ScrollRestoration } from "react-router-dom";
 
 const ThemeContext = createContext()
 
@@ -18,6 +19,9 @@ export default function Layout() {
                 <NavBar />
                 <AnimatedOutlet />
             </div>
+            <ScrollRestoration getKey={(location, matches) => {
+                return location.key
+            }}/>
         </ThemeContext.Provider>
     )
 }

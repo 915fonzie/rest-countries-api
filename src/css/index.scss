@@ -23,6 +23,12 @@ $very-dark-blue-text: #111517;
 
 @import "./global";
 
+.site-wrapper {
+    @include flex(flex-start, center, column);
+    height: 100%;
+    min-height: 100vh;
+}
+
 .site-wrapper.light-theme {
     background-color: $light-gray;
     color: $very-dark-blue-text;
@@ -46,6 +52,8 @@ header {
             font-weight: 800;
         }
         button {
+            @include flex(center, center, row);
+            gap: 0.5em;
             background: none;
             border: none;
             font-weight: 600;
@@ -276,8 +284,139 @@ form input.dark-theme {
     padding: 1em 1.5em;
 }
 
+.details-container {
+    flex-grow: 1;
+    width: 100%;
+    padding: 1em;
+
+    a {
+        @include flex(center, center, row);
+        gap: 0.5em;
+        margin: 2em 1em 4em 1em;
+        width: 100px;
+        height: 30px;
+        border-radius: 2px;
+        text-decoration: none;
+        font-weight: 300;
+    }
+
+    p {
+        font-weight: 300;
+    }
+
+    span {
+        font-weight: 600;
+    }
+}
+
+.details-container.light-theme {
+    a {
+        color: $very-dark-blue-text;
+        box-shadow: 0 0 4px rgb(214, 214, 214);
+        svg {
+            path {
+                fill: $very-dark-blue-text;
+            }
+        }
+    }
+}
+.details-container.dark-theme {
+    a {
+        color: $white;
+        background-color: $dark-blue;
+        svg {
+            path {
+                fill: $white;
+            }
+        }
+    }
+}
+
+.country-img-wrapper {
+    width: 320px;
+    height: 229px;
+    border-radius: 5px;
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        object-fit: cover;
+    }
+}
+
+.country-text {
+    width: 100%;
+    max-width: 575px;
+}
+
+.country {
+    @include flex(center, center, row);
+    flex-wrap: wrap;
+    gap: 1em;
+    width: 100%;
+}
+
+.details {
+    @include flex(space-between, flex-start, row);
+    flex-wrap: wrap;
+    gap: 2em;
+    width: 100%;
+}
+
+.border-wrapper {
+    @include flex(inherit, inherit, row);
+    gap: 1em;
+}
+
+.border {
+    @include flex(flex-start, center, row);
+    flex-wrap: wrap;
+    gap: 1em;
+    p {
+        padding: 0.5em 1em;
+        border-radius: 3px;
+    }
+}
+
+.border.light-theme {
+    p {
+        background-color: $white;
+        box-shadow: 0 0 4px rgb(186, 186, 186);
+    }
+}
+.border.dark-theme {
+    p {
+        background-color: $dark-blue;
+    }
+}
+
+
 @media screen and (min-width: 1000px) {
+    header {
+        padding: 0 4em;
+    }
     .inputs {
         padding: 3em 4em 0;
     }
+    .details-container {
+        a {
+            width: 150px;
+            height: 35px;
+            margin: 4em;
+            margin-left: 5.5em;
+            border-radius: 6px;
+        }
+    }
+    .country {
+        gap: 6em;
+    }
+
+    .details {
+        flex-wrap: nowrap;
+    }
+    .country-img-wrapper {
+        width: 560px;
+        height: 400px;
+    }
 }
+

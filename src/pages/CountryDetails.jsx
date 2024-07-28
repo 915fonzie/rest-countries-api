@@ -3,6 +3,9 @@ import getCountry from '../api/getCountry'
 import { useParams } from "react-router"
 import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
+import { ThemeContext } from "../components/Layout"
+import { useContext } from "react"
+import backArrow from '../assets/backarrow.svg'
 
 const countryDetailQuery = (name) => ({
     queryKey: ['country', name],
@@ -19,8 +22,9 @@ export const loader = (queryClient) =>
     } 
 
 export default function CountryDetails() {
-
+    window.scrollTo(0,0)
     const params = useParams()
+    const {theme} = useContext(ThemeContext)
     const { data, isPending } = useQuery(countryDetailQuery(params.country.split('-').join(" ")))
     if (isPending) {
         return <h1>Loading...</h1>
@@ -28,31 +32,45 @@ export default function CountryDetails() {
 
     return (
         <motion.div
+            className={`details-container ${theme}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{duration: 0.7}}
+            transition={{duration: 0.2}}
             exit={{opacity: 0}}
         >
-            <Link to="/">Back</Link>
-            <div>
-                <img src={data[0].flags.svg} />
-                <div>
+            <Link
+                to="/"
+            >
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 128 128" xmlSpace="preserve">
+                    <path d="M78.1 0v6.2c22.4 0 40.5 18.2 40.5 40.6s-18.1 40.6-40.5 40.6H17.9l27.9-28-4.5-4.5L5.5 90.8l36 36.2 4.5-4.5-28.8-28.9h60.9c25.8 0 46.7-21 46.7-46.8S103.9 0 78.1 0z"/>
+                </svg>
+                Back
+            </Link>
+            <div className="country">
+                <div className="country-img-wrapper">
+                    <img src={data[0].flags.svg} />
+                </div>
+                <div className="country-text">
                     <h1>{data[0].name.common}</h1>
-                    <div>
-                        <p><span>Native Name: </span>{Object.values(data[0].name.nativeName)[0].common}</p>
-                        <p><span>Population: </span>{data[0].population}</p>
-                        <p><span>Region: </span>{data[0].region}</p>
-                        <p><span>Sub Region: </span>{data[0].subregion}</p>
-                        <p><span>Capital: </span>{data[0].capital[0]}</p>
+                    <div className="details">
+                        <div>
+                            <p><span>Native Name: </span>{Object.values(data[0].name.nativeName)[0].common}</p>
+                            <p><span>Population: </span>{data[0].population}</p>
+                            <p><span>Region: </span>{data[0].region}</p>
+                            <p><span>Sub Region: </span>{data[0].subregion}</p>
+                            <p><span>Capital: </span>{data[0].capital[0]}</p>
+                        </div>
+                        <div>
+                            <p><span>Top Level Domain: </span>{data[0].tld[0]}</p>
+                            <p><span>Currencies: </span>{Object.values(data[0].currencies)[0].name}</p>
+                            <p><span>Languages: </span>{Object.values(data[0].languages).join(", ")}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p><span>Top Level Domain: </span>{data[0].tld[0]}</p>
-                        <p><span>Currencies: </span>{Object.values(data[0].currencies)[0].name}</p>
-                        <p><span>Languages: </span>{Object.values(data[0].languages).join(", ")}</p>
-                    </div>
-                    <div>
+                    <div className="border-wrapper">
                         <p><span>Border Countries: </span></p>
-                        {data[0].borders?.map(country => { return <p key={country}>{country}</p>})}
+                        <div className={`border ${theme}`}>
+                            {data[0].borders?.map(country => { return <p key={country}>{country}</p>})}
+                        </div>
                     </div>
                 </div>
             </div>

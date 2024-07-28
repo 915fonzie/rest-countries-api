@@ -27,12 +27,14 @@ const router = createBrowserRouter([
         index: true,
         name: "HOME",
         element: <Homepage />,
+        errorElement: <ErrorPage />,
         loader: homeLoader(queryClient),
       },
       {
         path: ":country",
         name: "COUNTRY",
         element: <CountryDetails />,
+        errorElement: <ErrorPage />,
         loader: detailsLoader(queryClient),
       }
     ]

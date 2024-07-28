@@ -92,6 +92,7 @@ export default function Homepage() {
       <Link
         to={name.official.split(' ').join('-')}
         key={name.official}
+        preventScrollReset={true}
       >
         <CountryCard
           name={name.common}
@@ -148,7 +149,7 @@ export default function Homepage() {
       className={`home-container ${theme}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: 0.2 }}
       exit={{ opacity: 0 }}
       style={{ willChange: "auto" }}
     >
